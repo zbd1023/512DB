@@ -5,6 +5,8 @@ import scala.concurrent.duration.*;
 import akka.util.*;
 import akka.pattern.*;
 
+import java.util.SortedMap;
+
 
 public class KVClient {
     private ActorRef[] KVStores;
@@ -22,6 +24,12 @@ public class KVClient {
         Timeout timeout = new Timeout(Duration.create(1, "seconds"));
         Future<Object> future = Patterns.ask(route(key), new KVStore.put(key, value), timeout);
         Await.result(future, timeout.duration());
+    }
+
+    public SortedMap<String, String> scan(String start, String end) throws Exception{
+        Timeout timeout = new Timeout(Duration.create(5, "seconds"));
+        Future<Object> future = Patterns.ask(route(start), new KVStore.scan(start, end), timeout);
+        return (SortedMap<String, String>) Await.result(future, timeout.duration());
     }
 
     private ActorRef route(String key){

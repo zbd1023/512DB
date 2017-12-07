@@ -2,11 +2,11 @@ package edu.duke.distributed_systems;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
-
 import java.io.IOException;
+import java.util.*;
 public class Start {
     final static int num = 10;
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         final ActorSystem system = ActorSystem.create("512DB");
         try {
             ActorRef[] KVStores = new ActorRef[num];
@@ -19,6 +19,7 @@ public class Start {
         } finally {
             system.terminate();
         }
+
     }
 }
 
