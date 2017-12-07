@@ -2,7 +2,7 @@
 <project>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>hello-akka-java</groupId>
+    <groupId>512DB</groupId>
     <artifactId>app</artifactId>
     <version>1.0</version>
 
@@ -43,7 +43,7 @@
                     <arguments>
                         <argument>-classpath</argument>
                         <classpath />
-                        <argument>com.lightbend.akka.sample.AkkaQuickstart</argument>
+                        <argument>edu.duke.distributed_systems.Start</argument>
                     </arguments>
                 </configuration>
             </plugin>
