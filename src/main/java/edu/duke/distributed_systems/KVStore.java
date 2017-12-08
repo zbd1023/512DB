@@ -48,11 +48,10 @@ public class KVStore extends AbstractActor{
     }
 
     private void Put(String k, String v){
-        getSender().tell(store.put(k, v), getSelf());
+        store.put(k, v);
+        getSender().tell("", getSelf());
     }
     private void Get(String k){
-//        SortedMap<String, String> scan = store.subMap("", "");
-//        scan.
         getSender().tell(store.get(k), getSelf());
     }
     private void Scan(String s, String e){

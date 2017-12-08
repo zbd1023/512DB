@@ -13,10 +13,13 @@ public class Start {
             for(int i =0; i < KVStores.length; i++){
                 KVStores[i] = system.actorOf(KVStore.props(), "KVStore" + i);
             }
-            SelectSqlParser s = new SelectSqlParser("select a,b,c from asdf where a>c or b=c");
-            System.out.println(s.getColumns());
-            System.out.println(s.getTable());
-            System.out.println(s.getWhere());
+            KVClient c = new KVClient(KVStores);
+            c.write("abc","abc");
+            System.out.println(c.read("abc"));
+            InsertSqlParser i = new InsertSqlParser("INSERT INTO table_name (column1, column2, column3) VALUES ( value1, value2, value3)");
+            System.out.println(i.getColumns());
+            System.out.println(i.getTable());
+            System.out.println(i.getValues());
             System.out.println(">>> Press ENTER to exit <<<");
             System.in.read();
         } catch (IOException ioe) {

@@ -7,7 +7,6 @@ import net.sf.jsqlparser.statement.*;
 import net.sf.jsqlparser.statement.select.*;
 import net.sf.jsqlparser.util.*;
 import java.util.*;
-import java.util.List;
 
 public class SelectSqlParser {
     //support 3 types of query: SELECT, INSERT, CREATE TABLE
@@ -38,7 +37,6 @@ public class SelectSqlParser {
         }
         else
             return "";
-
     }
 
 
