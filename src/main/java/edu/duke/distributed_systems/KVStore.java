@@ -9,6 +9,7 @@ public class KVStore extends AbstractActor{
     static public Props props() {
         return Props.create(KVStore.class);
     }
+    
     public static class put {
         public String key;
         public String value;
@@ -17,6 +18,7 @@ public class KVStore extends AbstractActor{
             this.value = v;
         }
     }
+    
     public static class get {
         public String key;
         public get(String k){
@@ -36,7 +38,6 @@ public class KVStore extends AbstractActor{
     private TreeMap<String, String> store = new TreeMap<>();
     // Assume a distributed, strongly-consistent, transactional key-value store
 
-
     @Override
     public Receive createReceive() {
 
@@ -51,9 +52,11 @@ public class KVStore extends AbstractActor{
         store.put(k, v);
         getSender().tell("", getSelf());
     }
+    
     private void Get(String k){
         getSender().tell(store.get(k), getSelf());
     }
+    
     private void Scan(String s, String e){
         getSender().tell(store.subMap(s, e), getSelf());
     }

@@ -35,5 +35,4 @@ public class InsertSqlParser {
         ((ExpressionList)this.i.getItemsList()).getExpressions().forEach( s -> res.add(((Column)s).getColumnName()));
         return res;
     }
-
 }

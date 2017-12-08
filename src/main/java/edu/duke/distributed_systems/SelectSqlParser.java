@@ -15,6 +15,7 @@ public class SelectSqlParser {
         Select select  = (Select) CCJSqlParserUtil.parse(q);
         this.p = (PlainSelect)select.getSelectBody();
     }
+    
     // SELECT a,v,c FROM asdf WHERE a = 1;
     public List<String> getColumns(){
         List<String> res = new ArrayList<>();
@@ -27,9 +28,11 @@ public class SelectSqlParser {
         }
         return res;
     }
+    
     public String getTable(){
         return ((Table)(this.p.getFromItem())).getName();
     }
+    
     public String getWhere(){
         if(this.p.getWhere() != null){
             List<String> res = new ArrayList<>();
@@ -38,9 +41,4 @@ public class SelectSqlParser {
         else
             return "";
     }
-
-
-
-
-
 }

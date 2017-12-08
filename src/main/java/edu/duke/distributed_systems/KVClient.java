@@ -7,7 +7,6 @@ import akka.pattern.*;
 
 import java.util.SortedMap;
 
-
 public class KVClient {
     private ActorRef[] KVStores;
     public KVClient(ActorRef[] KVS){
@@ -36,5 +35,4 @@ public class KVClient {
         // need to figure out this routing function
         return KVStores[0];
     }
-
 }
