@@ -5,6 +5,7 @@ import akka.actor.Props;
 
 import java.security.Key;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class KVStore extends AbstractActor{
     static public Props props() {
@@ -61,7 +62,8 @@ public class KVStore extends AbstractActor{
 
     private TreeMap<String, String> store = new TreeMap<>();
     private HashMap<UUID, List<Action>> transactionMap = new HashMap<>();
-    private HashSet<String> lockSet = new HashSet<>();
+    // For the entire kvstore, this lines creates a concurrent HashSet
+    Set<String> lockSet = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
 
     @Override
     public Receive createReceive() {
@@ -90,19 +92,29 @@ public class KVStore extends AbstractActor{
     
     private void BeginTransaction(UUID transactionID, List<Action> actionList) {
     	transactionMap.put(transactionID, actionList);
-    	
-    	// acquire locks
-    	for (int i = 0; i < actionList.size(); i++) {
-    		Action action = actionList.get(i);
-    		String lockKey = action.getActionKey();
-    		
-    		if (lockSet.contains(lockKey)) {
-    			// vote no commit
-    			getSender().tell(false, getSelf());
-    			return;
-    		}
-    		lockSet.add(lockKey);
-    	}
+    	Queue<String> locksNeedToAcquire = new LinkedList<>();
+    	actionList.forEach(a -> locksNeedToAcquire.add(a.getActionKey()));
+    	while(!locksNeedToAcquire.isEmpty()){
+    	    String lock = locksNeedToAcquire.poll();
+    	    if(!lockSet.contains(lock)){
+    	        lockSet.add(lock);
+            }
+            else{
+                locksNeedToAcquire.add(lock);
+            }
+        }
+//    	// acquire locks
+//    	for (int i = 0; i < actionList.size(); i++) {
+//    		Action action = actionList.get(i);
+//    		String lockKey = action.getActionKey();
+//    		locks
+//    		if (lockSet.contains(lockKey)) {
+//    			// vote no commit
+//    			getSender().tell(false, getSelf());
+//    			return;
+//    		}
+//    		lockSet.add(lockKey);
+//    	}
     	
     	// vote yes commit
     	getSender().tell(true, getSelf());

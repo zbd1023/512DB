@@ -19,16 +19,14 @@ public class TransactionGenerator {
 	 */
 	public Transaction makeSelectTransaction(String query) throws Exception {
 		SelectSqlParser parser = new SelectSqlParser(query);
-		
 		String table = parser.getTable();
 		List<String> columns = parser.getColumns();
 		String where = parser.getWhere();
-		
 		String firstPrimaryKey = metadataStore.getFirstPrimaryKey(table);
 		String lastPrimaryKey = metadataStore.getLastPrimaryKey(table);
 		
 		// create a ScanAction for each column to be selected
-		List<Action> actionList = new ArrayList<Action>();
+		List<Action> actionList = new ArrayList<>();
 		for (int i = 0; i < columns.size(); i++) {
 			String startKey = table + "/" + firstPrimaryKey + "/" + columns.get(i);
 			String endKey = table + "/" + lastPrimaryKey + "/" + columns.get(i);
@@ -69,7 +67,7 @@ public class TransactionGenerator {
 		}
 		
 		// create a PutAction for each column in the inserted row
-		List<Action> actionList = new ArrayList<Action>();
+		List<Action> actionList = new ArrayList<>();
 		for (int i = 0; i < columns.size(); i++) {
 			String key = table + "/" + primaryKeyValue + "/" + columns.get(i);
 			String value = values.get(i);
