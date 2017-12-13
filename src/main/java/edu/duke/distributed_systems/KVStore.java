@@ -141,6 +141,7 @@ public class KVStore extends AbstractActor{
     	}
     	
     	List<Action> actionList = transactionMap.get(transactionID);
+    	List<Result> sendList = new ArrayList<>();
 
     	// execute each Action
     	for (int i = 0; i < actionList.size(); i++) {
@@ -155,15 +156,18 @@ public class KVStore extends AbstractActor{
     			PutAction putAction = (PutAction) action;
 
                 //if successful insert, send true, else send false
-                getSender().tell(new InsertResult(true), getSelf());
+//                getSender().tell(new InsertResult(true), getSelf());
+                sendList.add(new InsertResult(true));
+
     		}
     		//SELECT STATEMENT
     		else if (action instanceof ScanAction) {
     		    ScanResult res = this.handleSelectRes(action);
-    		    getSender().tell(res, getSelf());
+    		    sendList.add(res);
     		}
     	}
-    	
+
+        getSender().tell(sendList, getSelf());
     	releaseLocks(actionList);
     	transactionMap.remove(transactionID);
     }

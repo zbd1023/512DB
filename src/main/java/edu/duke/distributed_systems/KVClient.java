@@ -62,8 +62,8 @@ public class KVClient {
     	for (int i = 0; i < KVStores.length; i++) {
     		Timeout timeout = new Timeout(Duration.create(1, "seconds"));
     		Future<Object> future = Patterns.ask(KVStores[i], new KVStore.commitTransaction(transactionID), timeout);
-    		Result result = (Result) Await.result(future, timeout.duration());
-    		resultList.add(result);
+    		List<Result> result = (List<Result>) Await.result(future, timeout.duration());
+    		resultList.addAll(result);
      	}
      	//TODO conditions here after retrieving all results
         AggregateResults agg = new AggregateResults();
