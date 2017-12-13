@@ -13,13 +13,17 @@ public class ScanResult extends Result {
     private Map<String, String> results;
     private String colName;
 
-    public ScanResult(String colName) {
+    public ScanResult(String key) throws MalformedKeyException {
         super();
-        this.init(colName);
+        this.init(key);
     }
-    private void init(String colName) {
+    private void init(String key) throws MalformedKeyException {
+        String strs[] = key.split("/");
+        if(strs.length != 3) {
+            throw new MalformedKeyException("Key is not formatted correctly.");
+        }
         this.results = new HashMap<>();
-        this.colName = colName;
+        this.colName = strs[2];
     }
 
     public Map<String, String> getResult() {
@@ -28,6 +32,14 @@ public class ScanResult extends Result {
 
     public String getColname() {
         return colName;
+    }
+
+    public String getTablePrimaryKey(String storeKey) throws MalformedKeyException {
+        String strs[] = storeKey.split("/");
+        if(strs.length != 3) {
+            throw new MalformedKeyException("Key not formatted correctly");
+        }
+        return strs[2];
     }
 
     /**

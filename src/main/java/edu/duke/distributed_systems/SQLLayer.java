@@ -18,30 +18,29 @@ public class SQLLayer {
         this.kvClient = c;
     }
     // This function handles SQL calls
-    public String[][] processSQL(String SQL) throws Exception {
+    public AggregateResults processSQL(String SQL) throws Exception {
         Statement s = CCJSqlParserUtil.parse(SQL);
         if(s instanceof Select){
             return processSelect(SQL);
         }
         else if(s instanceof Insert){
-            return processInsert(SQL)? new String[0][0] : null;
+            return processInsert(SQL)? new AggregateResults() : null;
         }
         else if(s instanceof CreateTable) {
-            return processCreateTable(SQL) ? new String[0][0] : null;
+            return processCreateTable(SQL) ? new AggregateResults() : null;
         }
 
-        return new String[0][0];
+        return new AggregateResults();
     }
 
     private boolean processCreateTable(String SQL) throws Exception {
         return false;
     }
 
-    private String[][] processSelect(String SQL) throws Exception {
+    private AggregateResults processSelect(String SQL) throws Exception {
         TransactionGenerator TG = new TransactionGenerator(metadataStore);
         Transaction t =  TG.makeSelectTransaction(SQL);
-        List<Result> results = this.kvClient.processTransaction(t);
-        return null;
+        return this.kvClient.processTransaction(t);
     }
 
     private boolean processInsert(String SQL) throws Exception {

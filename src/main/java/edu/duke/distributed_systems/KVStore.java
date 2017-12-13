@@ -135,7 +135,7 @@ public class KVStore extends AbstractActor{
     	transactionMap.remove(transactionID);
     }
     
-    private void CommitTransaction(UUID transactionID) {
+    private void CommitTransaction(UUID transactionID) throws Result.MalformedKeyException {
     	if (!transactionMap.containsKey(transactionID)) {
     		return;
     	}
@@ -168,20 +168,22 @@ public class KVStore extends AbstractActor{
     	transactionMap.remove(transactionID);
     }
 
-    private ScanResult handleSelectRes(Action action) {
+    private ScanResult handleSelectRes(Action action) throws Result.MalformedKeyException {
         ScanAction scanAction = (ScanAction) action;
 
         String start = scanAction.getKey();
         String end = scanAction.getEndKey();
 
         String strs[] = start.split("/");
-        ScanResult result = new ScanResult(strs[strs.length - 1]);
+        String colName = strs[strs.length - 1];
+        ScanResult result = new ScanResult(colName);
         //start to end is not inclusive, we need to find a better way to find the range
         SortedMap<String, String> ranges = store.subMap(start, end);
         for(String key : ranges.keySet()) {
-            //TODO PUT condition here or something
             try {
-                result.addResult(key, store.get(key));
+                if(key.contains(colName)) {
+                    result.addResult(key, store.get(key));
+                }
             }
             catch (Result.MalformedKeyException e) {
                 e.printStackTrace();

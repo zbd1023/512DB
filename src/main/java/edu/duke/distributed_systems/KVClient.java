@@ -15,7 +15,7 @@ public class KVClient {
         this.KVStores = KVS;
     }
 
-    public List<Result> processTransaction(Transaction tx) throws Exception {
+    public AggregateResults processTransaction(Transaction tx) throws Exception {
     	UUID transactionID = tx.getTransactionID();
     	List<Action> actionList = tx.getActions();
     	
@@ -47,7 +47,6 @@ public class KVClient {
     	}
     	
     	return commitTransaction(transactionID);
-    	// TODO: return the result somehow
     }
     
     private void abortTransaction(UUID transactionID) throws Exception {
@@ -58,7 +57,7 @@ public class KVClient {
     	}
     }
     
-    private List<Result> commitTransaction(UUID transactionID) throws Exception {
+    private AggregateResults commitTransaction(UUID transactionID) throws Exception {
         List<Result> resultList = new ArrayList<>();
     	for (int i = 0; i < KVStores.length; i++) {
     		Timeout timeout = new Timeout(Duration.create(1, "seconds"));
@@ -66,10 +65,10 @@ public class KVClient {
     		Result result = (Result) Await.result(future, timeout.duration());
     		resultList.add(result);
      	}
-
-     	//TODO parse resultList to create user-friendly data
-
-     	return resultList;
+     	//TODO conditions here after retrieving all results
+        AggregateResults agg = new AggregateResults();
+    	agg.generateAggregateResults(resultList);
+    	return agg;
     }
     
     public String read(String key) throws Exception{
