@@ -9,7 +9,7 @@ public class ScanAction extends Action {
 		this.endKey = endKey;
 	}
 	
-	public String getStartKey() {
+	public String getKey() {
 		return startKey;
 	}
 	

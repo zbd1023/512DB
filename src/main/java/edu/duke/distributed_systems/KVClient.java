@@ -15,19 +15,19 @@ public class KVClient {
         this.KVStores = KVS;
     }
 
-    public void processTransaction(Transaction tx) throws Exception {
+    public List<Result> processTransaction(Transaction tx) throws Exception {
     	UUID transactionID = tx.getTransactionID();
     	List<Action> actionList = tx.getActions();
     	
     	// map of KVStore ActorRef to its list of Actions to execute
-    	Map<ActorRef, List<Action>> transactionMap = new HashMap<ActorRef, List<Action>>();
+    	Map<ActorRef, List<Action>> transactionMap = new HashMap<>();
     	
     	for (int i = 0; i < actionList.size(); i++) {
     		Action action = actionList.get(i);
-    		ActorRef store = route(action.getActionKey());
+    		ActorRef store = route(action.getKey());
     		
     		if (!transactionMap.containsKey(store)) {
-    			transactionMap.put(store, new ArrayList<Action>());
+    			transactionMap.put(store, new ArrayList<>());
     		}
     		transactionMap.get(store).add(action);
     	}
@@ -35,16 +35,18 @@ public class KVClient {
     	// send the Actions to each KVStore ActorRef and request votes
     	for (ActorRef store : transactionMap.keySet()) {
     		Timeout timeout = new Timeout(Duration.create(1, "seconds"));
+
+    		//begins transaction and immediately asks for votes
             Future<Object> future = Patterns.ask(store, new KVStore.beginTransaction(transactionID, actionList), timeout);
             boolean vote = (Boolean) Await.result(future, timeout.duration());
             
             if (!vote) {
             	abortTransaction(transactionID);
-            	return;
+            	return null;
             }
     	}
     	
-    	commitTransaction(transactionID);
+    	return commitTransaction(transactionID);
     	// TODO: return the result somehow
     }
     
@@ -56,14 +58,18 @@ public class KVClient {
     	}
     }
     
-    private void commitTransaction(UUID transactionID) throws Exception {
+    private List<Result> commitTransaction(UUID transactionID) throws Exception {
+        List<Result> resultList = new ArrayList<>();
     	for (int i = 0; i < KVStores.length; i++) {
     		Timeout timeout = new Timeout(Duration.create(1, "seconds"));
     		Future<Object> future = Patterns.ask(KVStores[i], new KVStore.commitTransaction(transactionID), timeout);
-    		Await.result(future, timeout.duration());
+    		Result result = (Result) Await.result(future, timeout.duration());
+    		resultList.add(result);
      	}
-    	
-    	// TODO: return the result somehow
+
+     	//TODO parse resultList to create user-friendly data
+
+     	return resultList;
     }
     
     public String read(String key) throws Exception{
@@ -86,6 +92,7 @@ public class KVClient {
 
     private ActorRef route(String key){
         // need to figure out this routing function
-        return KVStores[0];
+        int hash = key.hashCode();
+        return KVStores[hash % KVStores.length];
     }
 }

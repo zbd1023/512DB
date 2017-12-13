@@ -8,14 +8,14 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class KVStore extends AbstractActor{
-    static public Props props() {
+    public static Props props() {
         return Props.create(KVStore.class);
     }
     
     public static class put {
         public String key;
         public String value;
-        public put(String k, String v){
+        put(String k, String v){
             this.key = k;
             this.value = v;
         }
@@ -91,18 +91,23 @@ public class KVStore extends AbstractActor{
     }
     
     private void BeginTransaction(UUID transactionID, List<Action> actionList) {
-    	transactionMap.put(transactionID, actionList);
     	Queue<String> locksNeedToAcquire = new LinkedList<>();
-    	actionList.forEach(a -> locksNeedToAcquire.add(a.getActionKey()));
+    	actionList.forEach(a -> locksNeedToAcquire.add(a.getKey()));
+
+    	//TODO implement timeout or max number of retries
     	while(!locksNeedToAcquire.isEmpty()){
     	    String lock = locksNeedToAcquire.poll();
     	    if(!lockSet.contains(lock)){
     	        lockSet.add(lock);
             }
-            else{
+            else {
                 locksNeedToAcquire.add(lock);
             }
         }
+
+        //after acquire al;l necessary locks, can add transaction
+        transactionMap.put(transactionID, actionList);
+
 //    	// acquire locks
 //    	for (int i = 0; i < actionList.size(); i++) {
 //    		Action action = actionList.get(i);
@@ -136,33 +141,60 @@ public class KVStore extends AbstractActor{
     	}
     	
     	List<Action> actionList = transactionMap.get(transactionID);
-    	
+
     	// execute each Action
     	for (int i = 0; i < actionList.size(); i++) {
     		Action action = actionList.get(i);
-    		
+
+    		//NOTE right now, no action will ever be a GetAction
     		if (action instanceof GetAction) {
     			GetAction getAction = (GetAction) action;
-    			// TODO: execute GetAction and return result
     		}
+    		//INSERT STATEMENT
     		else if (action instanceof PutAction) {
     			PutAction putAction = (PutAction) action;
-    			// TODO: execute PutAction and return result
+
+                //if successful insert, send true, else send false
+                getSender().tell(new InsertResult(true), getSelf());
     		}
+    		//SELECT STATEMENT
     		else if (action instanceof ScanAction) {
-    			ScanAction scanAction = (ScanAction) action;
-    			// TODO: execute ScanAction and return result
+    		    ScanResult res = this.handleSelectRes(action);
+    		    getSender().tell(res, getSelf());
     		}
     	}
     	
     	releaseLocks(actionList);
     	transactionMap.remove(transactionID);
     }
+
+    private ScanResult handleSelectRes(Action action) {
+        ScanAction scanAction = (ScanAction) action;
+
+        String start = scanAction.getKey();
+        String end = scanAction.getEndKey();
+
+        String strs[] = start.split("/");
+        ScanResult result = new ScanResult(strs[strs.length - 1]);
+        //start to end is not inclusive, we need to find a better way to find the range
+        SortedMap<String, String> ranges = store.subMap(start, end);
+        for(String key : ranges.keySet()) {
+            //TODO PUT condition here or something
+            try {
+                result.addResult(key, store.get(key));
+            }
+            catch (Result.MalformedKeyException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return result;
+    }
     
     private void releaseLocks(List<Action> actionList) {
     	for (int i = 0; i < actionList.size(); i++) {
     		Action action = actionList.get(i);
-    		String lockKey = action.getActionKey();
+    		String lockKey = action.getKey();
     		lockSet.remove(lockKey);
     	}
     }

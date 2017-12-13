@@ -21,6 +21,8 @@ public class TransactionGenerator {
 		SelectSqlParser parser = new SelectSqlParser(query);
 		String table = parser.getTable();
 		List<String> columns = parser.getColumns();
+
+		//TODO do where clause
 		String where = parser.getWhere();
 		String firstPrimaryKey = metadataStore.getFirstPrimaryKey(table);
 		String lastPrimaryKey = metadataStore.getLastPrimaryKey(table);
@@ -33,8 +35,7 @@ public class TransactionGenerator {
 			actionList.add(new ScanAction(startKey, endKey));
 		}
 		
-		Transaction tx = new Transaction(actionList);
-		return tx;
+		return new Transaction(actionList);
 	}
 	
 	/**

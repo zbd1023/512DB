@@ -3,9 +3,7 @@ import net.sf.jsqlparser.parser.*;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 
-import net.sf.jsqlparser.statement.*;
 import net.sf.jsqlparser.statement.select.*;
-import net.sf.jsqlparser.util.*;
 import java.util.*;
 
 public class SelectSqlParser {
