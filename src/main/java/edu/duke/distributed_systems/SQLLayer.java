@@ -12,13 +12,12 @@ import java.util.List;
 public class SQLLayer {
     private KVClient kvClient;
     private MetadataStore metadataStore;
-    public SQLLayer(KVClient c){
-
-        this.metadataStore = new MetadataStore();
+    public SQLLayer(KVClient c, MetadataStore store) {
+        this.metadataStore = store;
         this.kvClient = c;
     }
     // This function handles SQL calls
-    public AggregateResults processSQL(String SQL) throws Exception {
+    public Result processSQL(String SQL) throws Exception {
         Statement s = CCJSqlParserUtil.parse(SQL);
         if(s instanceof Select){
             return processSelect(SQL);
@@ -37,7 +36,7 @@ public class SQLLayer {
         return false;
     }
 
-    private AggregateResults processSelect(String SQL) throws Exception {
+    private Result processSelect(String SQL) throws Exception {
         TransactionGenerator TG = new TransactionGenerator(metadataStore);
         Transaction t =  TG.makeSelectTransaction(SQL);
         return this.kvClient.processTransaction(t);

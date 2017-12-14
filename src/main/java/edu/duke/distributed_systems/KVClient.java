@@ -15,7 +15,7 @@ public class KVClient {
         this.KVStores = KVS;
     }
 
-    public AggregateResults processTransaction(Transaction tx) throws Exception {
+    public Result processTransaction(Transaction tx) throws Exception {
     	UUID transactionID = tx.getTransactionID();
     	List<Action> actionList = tx.getActions();
     	
@@ -57,18 +57,28 @@ public class KVClient {
     	}
     }
     
-    private AggregateResults commitTransaction(UUID transactionID) throws Exception {
+    private Result commitTransaction(UUID transactionID) throws Exception {
         List<Result> resultList = new ArrayList<>();
     	for (int i = 0; i < KVStores.length; i++) {
-    		Timeout timeout = new Timeout(Duration.create(1, "seconds"));
+    		Timeout timeout = new Timeout(Duration.create(5, "seconds"));
     		Future<Object> future = Patterns.ask(KVStores[i], new KVStore.commitTransaction(transactionID), timeout);
     		List<Result> result = (List<Result>) Await.result(future, timeout.duration());
     		resultList.addAll(result);
      	}
-     	//TODO conditions here after retrieving all results
-        AggregateResults agg = new AggregateResults();
-    	agg.generateAggregateResults(resultList);
-    	return agg;
+     	if(resultList.size() == 0)
+     	    return null;
+
+    	System.out.println("generating sql result now");
+
+     	if(resultList.get(0) instanceof ScanResult) {
+            //TODO conditions here after retrieving all results
+            AggregateResults agg = new AggregateResults();
+            agg.generateAggregateResults(resultList);
+            return agg;
+        }
+        else {
+    	    return new InsertResult(true);
+        }
     }
     
     public String read(String key) throws Exception{
@@ -91,7 +101,7 @@ public class KVClient {
 
     private ActorRef route(String key){
         // need to figure out this routing function
-        int hash = key.hashCode();
+        int hash = Math.abs(key.hashCode());
         return KVStores[hash % KVStores.length];
     }
 }

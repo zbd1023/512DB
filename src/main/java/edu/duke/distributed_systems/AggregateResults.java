@@ -10,7 +10,7 @@ import java.util.Map;
  * @author Bill Xiong
  */
 
-public class AggregateResults {
+public class AggregateResults extends Result {
     private Map<String, Map<String, String>> aggregateResults;
     private List<Map<String, String>> resultList;
 
@@ -41,7 +41,7 @@ public class AggregateResults {
         }
     }
 
-    public List<Map<String, String>> getAggregateResults() {
+    public List<Map<String, String>> getResult() {
         if(resultList != null)
             return resultList;
         resultList = new ArrayList<>();

@@ -6,7 +6,7 @@ public class MetadataStore {
 	private HashMap<String, String> store;
 	
 	public MetadataStore() {
-		this.store = new HashMap<String, String>();
+		this.store = new HashMap<>();
 	}
 	
 	public String getPrimaryKey(String table) {

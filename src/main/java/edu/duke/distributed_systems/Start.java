@@ -2,6 +2,8 @@ package edu.duke.distributed_systems;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
+
+import javax.swing.plaf.metal.MetalTabbedPaneUI;
 import java.io.IOException;
 import java.util.*;
 
@@ -16,6 +18,7 @@ public class Start {
             for(int i =0; i < KVStores.length; i++){
                 KVStores[i] = system.actorOf(KVStore.props(), "KVStore" + i);
             }
+            testQuery(KVStores);
             
             KVClient c = new KVClient(KVStores);
             c.write("abc","abc");
@@ -31,6 +34,17 @@ public class Start {
         	ioe.printStackTrace();
         } finally {
             system.terminate();
+        }
+    }
+
+    private static void testQuery(ActorRef stores[]) {
+        KVClient client = new KVClient(stores);
+        MetadataStore dataStore = new MetadataStore();
+        SQLLayer layer = new SQLLayer(client, dataStore);
+        try {
+            layer.processSQL("INSERT INTO Users (id, first, last, email) VALUES (a, b, c, d)");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

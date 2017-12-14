@@ -3,7 +3,6 @@ package edu.duke.distributed_systems;
 import akka.actor.AbstractActor;
 import akka.actor.Props;
 
-import java.security.Key;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -136,12 +135,21 @@ public class KVStore extends AbstractActor{
     }
     
     private void CommitTransaction(UUID transactionID) throws Result.MalformedKeyException {
+//        if(true) {
+//            List<Result> sendList = new ArrayList<>();
+//            System.out.println("sent");
+//            getSender().tell(sendList, getSelf());
+//            System.out.println("second");
+//            return;
+//        }
+        List<Result> sendList = new ArrayList<>();
     	if (!transactionMap.containsKey(transactionID)) {
+    	    //send something back to client so it doesnt timeout
+            getSender().tell(sendList, getSelf());
     		return;
     	}
-    	
+
     	List<Action> actionList = transactionMap.get(transactionID);
-    	List<Result> sendList = new ArrayList<>();
 
     	// execute each Action
     	for (int i = 0; i < actionList.size(); i++) {
@@ -154,10 +162,10 @@ public class KVStore extends AbstractActor{
     		//INSERT STATEMENT
     		else if (action instanceof PutAction) {
     			PutAction putAction = (PutAction) action;
-
                 //if successful insert, send true, else send false
 //                getSender().tell(new InsertResult(true), getSelf());
-                sendList.add(new InsertResult(true));
+
+                sendList.add(handleInsertRes(action));
 
     		}
     		//SELECT STATEMENT
@@ -166,10 +174,16 @@ public class KVStore extends AbstractActor{
     		    sendList.add(res);
     		}
     	}
-
+    	System.out.println("sending after");
         getSender().tell(sendList, getSelf());
     	releaseLocks(actionList);
     	transactionMap.remove(transactionID);
+    }
+
+    private InsertResult handleInsertRes(Action action) {
+        PutAction putAction = (PutAction) action;
+        store.put(putAction.getKey(), putAction.getValue());
+        return new InsertResult(true);
     }
 
     private ScanResult handleSelectRes(Action action) throws Result.MalformedKeyException {

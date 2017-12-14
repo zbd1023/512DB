@@ -26,6 +26,10 @@ public class TransactionGenerator {
 		String where = parser.getWhere();
 		String firstPrimaryKey = metadataStore.getFirstPrimaryKey(table);
 		String lastPrimaryKey = metadataStore.getLastPrimaryKey(table);
+		if(firstPrimaryKey == null || lastPrimaryKey == null) {
+			return new Transaction(new ArrayList<>());
+
+		}
 		
 		// create a ScanAction for each column to be selected
 		List<Action> actionList = new ArrayList<>();
@@ -60,10 +64,10 @@ public class TransactionGenerator {
 		}
 		
 		// update table metadata (first and last primary key) if necessary
-		if (primaryKeyValue.compareTo(metadataStore.getFirstPrimaryKey(table)) < 0) {
+		if (primaryKey == null || primaryKeyValue.compareTo(metadataStore.getFirstPrimaryKey(table)) < 0) {
 			metadataStore.setFirstPrimaryKey(table, primaryKeyValue);
 		}
-		if (primaryKeyValue.compareTo(metadataStore.getLastPrimaryKey(table)) > 0) {
+		if (primaryKey == null || primaryKeyValue.compareTo(metadataStore.getLastPrimaryKey(table)) > 0) {
 			metadataStore.setLastPrimaryKey(table, primaryKeyValue);
 		}
 		
