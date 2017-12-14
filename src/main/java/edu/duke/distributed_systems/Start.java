@@ -40,6 +40,7 @@ public class Start {
     private static void testQuery(ActorRef stores[]) {
         KVClient client = new KVClient(stores);
         MetadataStore dataStore = new MetadataStore();
+        dataStore.setPrimaryKey("Users", "id");
         SQLLayer layer = new SQLLayer(client, dataStore);
         try {
             layer.processSQL("INSERT INTO Users (id, first, last, email) VALUES (a, b, c, d)");

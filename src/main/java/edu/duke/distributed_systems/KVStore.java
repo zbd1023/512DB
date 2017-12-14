@@ -135,13 +135,6 @@ public class KVStore extends AbstractActor{
     }
     
     private void CommitTransaction(UUID transactionID) throws Result.MalformedKeyException {
-//        if(true) {
-//            List<Result> sendList = new ArrayList<>();
-//            System.out.println("sent");
-//            getSender().tell(sendList, getSelf());
-//            System.out.println("second");
-//            return;
-//        }
         List<Result> sendList = new ArrayList<>();
     	if (!transactionMap.containsKey(transactionID)) {
     	    //send something back to client so it doesnt timeout
@@ -183,6 +176,7 @@ public class KVStore extends AbstractActor{
     private InsertResult handleInsertRes(Action action) {
         PutAction putAction = (PutAction) action;
         store.put(putAction.getKey(), putAction.getValue());
+        System.out.println(store);
         return new InsertResult(true);
     }
 

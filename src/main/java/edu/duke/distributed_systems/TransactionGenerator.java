@@ -62,12 +62,14 @@ public class TransactionGenerator {
 				break;
 			}
 		}
-		
+
+		String firstPrimary = metadataStore.getFirstPrimaryKey(table);
+
 		// update table metadata (first and last primary key) if necessary
-		if (primaryKey == null || primaryKeyValue.compareTo(metadataStore.getFirstPrimaryKey(table)) < 0) {
+		if (primaryKey == null || firstPrimary == null || primaryKeyValue.compareTo(metadataStore.getFirstPrimaryKey(table)) < 0) {
 			metadataStore.setFirstPrimaryKey(table, primaryKeyValue);
 		}
-		if (primaryKey == null || primaryKeyValue.compareTo(metadataStore.getLastPrimaryKey(table)) > 0) {
+		if (primaryKey == null || firstPrimary == null || primaryKeyValue.compareTo(metadataStore.getLastPrimaryKey(table)) > 0) {
 			metadataStore.setLastPrimaryKey(table, primaryKeyValue);
 		}
 		
