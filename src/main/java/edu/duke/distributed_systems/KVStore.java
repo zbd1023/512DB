@@ -106,21 +106,6 @@ public class KVStore extends AbstractActor{
 
         //after acquire al;l necessary locks, can add transaction
         transactionMap.put(transactionID, actionList);
-
-//    	// acquire locks
-//    	for (int i = 0; i < actionList.size(); i++) {
-//    		Action action = actionList.get(i);
-//    		String lockKey = action.getActionKey();
-//    		locks
-//    		if (lockSet.contains(lockKey)) {
-//    			// vote no commit
-//    			getSender().tell(false, getSelf());
-//    			return;
-//    		}
-//    		lockSet.add(lockKey);
-//    	}
-    	
-    	// vote yes commit
     	getSender().tell(true, getSelf());
     }
     
@@ -143,7 +128,6 @@ public class KVStore extends AbstractActor{
     	}
 
     	List<Action> actionList = transactionMap.get(transactionID);
-
     	// execute each Action
     	for (int i = 0; i < actionList.size(); i++) {
     		Action action = actionList.get(i);
@@ -172,20 +156,17 @@ public class KVStore extends AbstractActor{
     private InsertResult handleInsertRes(Action action) {
         PutAction putAction = (PutAction) action;
         store.put(putAction.getKey(), putAction.getValue());
-        System.out.println(store);
         return new InsertResult(true);
     }
 
     private ScanResult handleSelectRes(Action action) throws Result.MalformedKeyException {
         ScanAction scanAction = (ScanAction) action;
-        System.out.println("Scan!!!");
-        System.out.println(scanAction);
         String start = scanAction.getKey();
         String end = scanAction.getEndKey();
 
         String strs[] = start.split("/");
         String colName = strs[strs.length - 1];
-        ScanResult result = new ScanResult(colName);
+        ScanResult result = new ScanResult(start);
         //start to end is not inclusive, we need to find a better way to find the range
         SortedMap<String, String> ranges = store.subMap(start, end);
         for(String key : ranges.keySet()) {

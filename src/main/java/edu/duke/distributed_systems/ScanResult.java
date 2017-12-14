@@ -18,7 +18,6 @@ public class ScanResult extends Result {
         this.init(key);
     }
     private void init(String key) throws MalformedKeyException {
-        System.out.println(key);
         String strs[] = key.split("/");
         if(strs.length != 3) {
             throw new MalformedKeyException("Key is not formatted correctly.");
@@ -40,7 +39,7 @@ public class ScanResult extends Result {
         if(strs.length != 3) {
             throw new MalformedKeyException("Key not formatted correctly");
         }
-        return strs[2];
+        return strs[1];
     }
 
     /**
@@ -57,7 +56,12 @@ public class ScanResult extends Result {
         results.put(storeKey, columnValue);
     }
 
-//    /**
+    @Override
+    public String toString() {
+        return "Column: " + colName + " results: " + results;
+    }
+
+    //    /**
 //     * Adds a key pair from kvstore to results map
 //     * @param storeKey key from kv store, which is in the form of TABLE/PRIMARY_KEY/COLUMN
 //     * @param columnValue The value from kv store, which represents the column value

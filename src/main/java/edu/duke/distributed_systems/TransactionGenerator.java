@@ -28,9 +28,7 @@ public class TransactionGenerator {
 		String lastPrimaryKey = metadataStore.getLastPrimaryKey(table);
 		if(firstPrimaryKey == null || lastPrimaryKey == null) {
 			return new Transaction(new ArrayList<>());
-
 		}
-		
 		// create a ScanAction for each column to be selected
 		List<Action> actionList = new ArrayList<>();
 		for (int i = 0; i < columns.size(); i++) {
@@ -64,13 +62,14 @@ public class TransactionGenerator {
 		}
 
 		String firstPrimary = metadataStore.getFirstPrimaryKey(table);
-
+		String lastPrimary = metadataStore.getLastPrimaryKey(table);
 		// update table metadata (first and last primary key) if necessary
 		if (primaryKey == null || firstPrimary == null || primaryKeyValue.compareTo(metadataStore.getFirstPrimaryKey(table)) < 0) {
 			metadataStore.setFirstPrimaryKey(table, primaryKeyValue);
 		}
-		if (primaryKey == null || firstPrimary == null || primaryKeyValue.compareTo(metadataStore.getLastPrimaryKey(table)) > 0) {
-			metadataStore.setLastPrimaryKey(table, primaryKeyValue);
+		if (primaryKey == null || lastPrimary == null || primaryKeyValue.compareTo(metadataStore.getLastPrimaryKey(table)) > 0) {
+			// this is a hack to set set last primary key
+			metadataStore.setLastPrimaryKey(table, primaryKeyValue+'0');
 		}
 		
 		// create a PutAction for each column in the inserted row

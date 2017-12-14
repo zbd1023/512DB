@@ -69,7 +69,6 @@ public class KVClient {
      	    return null;
 
     	System.out.println("generating sql result now");
-
      	if(resultList.get(0) instanceof ScanResult) {
             //TODO conditions here after retrieving all results
             AggregateResults agg = new AggregateResults();
@@ -102,6 +101,6 @@ public class KVClient {
     private ActorRef route(String key){
         // need to figure out this routing function
         int hash = Math.abs(key.hashCode());
-        return KVStores[hash % KVStores.length];
+        return KVStores[0];
     }
 }

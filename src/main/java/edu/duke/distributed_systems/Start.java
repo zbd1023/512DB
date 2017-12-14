@@ -17,20 +17,14 @@ public class Start {
                 KVStores[i] = system.actorOf(KVStore.props(), "KVStore" + i);
             }
 
-            KVClient c = new KVClient(KVStores);
-            MetadataStore metaStore = new MetadataStore();
-            metaStore.setPrimaryKey("tb", "column1");
-            metaStore.setFirstPrimaryKey("tb", "value0");
-            metaStore.setLastPrimaryKey("tb", "value10");
-            SQLLayer sqlLayer = new SQLLayer(c,metaStore);
-            sqlLayer.processSQL("INSERT INTO tb (column1, column2, column3) VALUES ( value1, value2, value3)");
-            sqlLayer.processSQL("SELECT column1, column2 FROM tb");
-//            c.write("abc","abc");
-//            System.out.println(c.read("abc"));
-//            InsertSqlParser i = new InsertSqlParser("INSERT INTO table_name (column1, column2, column3) VALUES ( value1, value2, value3)");
-//            System.out.println(i.getColumns());
-//            System.out.println(i.getTable());
-//            System.out.println(i.getValues());
+//            KVClient c = new KVClient(KVStores);
+//            MetadataStore metaStore = new MetadataStore();
+//            metaStore.setPrimaryKey("tb", "column1");
+//            SQLLayer sqlLayer = new SQLLayer(c,metaStore);
+//            sqlLayer.processSQL("INSERT INTO tb (column1, column2, column3) VALUES ( key1, value2, value3)");
+//            sqlLayer.processSQL("INSERT INTO tb (column1, column2, column3) VALUES ( key2, value4, value5)");
+//            System.out.println(sqlLayer.processSQL("SELECT column1, column2 FROM tb").getResult());
+            testQuery(KVStores);
             System.out.println(">>> Press ENTER to exit <<<");
             System.in.read();
         } catch (IOException ioe) {
@@ -47,9 +41,22 @@ public class Start {
         dataStore.setPrimaryKey("Users", "id");
         SQLLayer layer = new SQLLayer(client, dataStore);
         try {
-            layer.processSQL("INSERT INTO Users (id, first, last, email) VALUES (a, b, c, d)");
+            layer.processSQL("INSERT INTO Users (id, first, last, email) VALUES (asf, Wilson, Zhang, bzduke.edu)");
         } catch (Exception e) {
             e.printStackTrace();
         }
+        try {
+            layer.processSQL("INSERT INTO Users (id, first, last, email) VALUES (asfg, Jane, Doe, jdduke.edu)");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            System.out.println(layer.processSQL("SELECT id, first, last, email FROM Users").getResult());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
     }
 }

@@ -28,15 +28,16 @@ public class AggregateResults extends Result {
                 String primary;
                 try {
                     primary = scanRes.getTablePrimaryKey(storeKey);
+
                 } catch (Result.MalformedKeyException e) {
                     e.printStackTrace();
                     return;
                 }
-
                 if(!aggregateResults.containsKey(primary)) {
                     aggregateResults.put(primary, new HashMap<>());
                 }
                 aggregateResults.get(primary).put(scanRes.getColname(), map.get(storeKey));
+
             }
         }
     }
@@ -44,8 +45,8 @@ public class AggregateResults extends Result {
     public List<Map<String, String>> getResult() {
         if(resultList != null)
             return resultList;
+        System.out.println(aggregateResults);
         resultList = new ArrayList<>();
-
         for(String key : aggregateResults.keySet())
             resultList.add(aggregateResults.get(key));
 
