@@ -2,12 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="58ded707-2f1b-4f15-87a2-6950f74ac840" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/src/main/java/edu/duke/distributed_systems/KVStore.java" afterPath="$PROJECT_DIR$/src/main/java/edu/duke/distributed_systems/KVStore.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/edu/duke/distributed_systems/PutAction.java" afterPath="$PROJECT_DIR$/src/main/java/edu/duke/distributed_systems/PutAction.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/edu/duke/distributed_systems/ScanAction.java" afterPath="$PROJECT_DIR$/src/main/java/edu/duke/distributed_systems/ScanAction.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/edu/duke/distributed_systems/ScanResult.java" afterPath="$PROJECT_DIR$/src/main/java/edu/duke/distributed_systems/ScanResult.java" />
       <change beforePath="$PROJECT_DIR$/src/main/java/edu/duke/distributed_systems/Start.java" afterPath="$PROJECT_DIR$/src/main/java/edu/duke/distributed_systems/Start.java" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/edu/duke/distributed_systems/TransactionGenerator.java" afterPath="$PROJECT_DIR$/src/main/java/edu/duke/distributed_systems/TransactionGenerator.java" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -34,7 +31,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TransactionGenerator.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="TransactionGenerator.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/edu/duke/distributed_systems/TransactionGenerator.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="-129">
@@ -67,11 +64,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Start.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Start.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/edu/duke/distributed_systems/Start.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="155">
-              <caret line="26" column="24" lean-forward="true" selection-start-line="26" selection-start-column="24" selection-end-line="26" selection-end-column="24" />
+            <state relative-caret-position="684">
+              <caret line="39" column="9" lean-forward="true" selection-start-line="39" selection-start-column="9" selection-end-line="39" selection-end-column="9" />
               <folding />
             </state>
           </provider>
@@ -444,7 +441,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="853000" />
+    <option name="totallyTimeSpent" value="935000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="800" extended-state="6" />
@@ -872,14 +869,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/edu/duke/distributed_systems/Start.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="155">
-          <caret line="26" column="24" lean-forward="true" selection-start-line="26" selection-start-column="24" selection-end-line="26" selection-end-column="24" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/edu/duke/distributed_systems/SQLLayer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="171">
@@ -894,6 +883,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-129">
           <caret line="19" column="23" lean-forward="false" selection-start-line="19" selection-start-column="23" selection-end-line="19" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/duke/distributed_systems/Start.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="684">
+          <caret line="39" column="9" lean-forward="true" selection-start-line="39" selection-start-column="9" selection-end-line="39" selection-end-column="9" />
           <folding />
         </state>
       </provider>
