@@ -21,8 +21,7 @@ public class KVClient {
     	
     	// map of KVStore ActorRef to its list of Actions to execute
     	Map<ActorRef, List<Action>> transactionMap = new HashMap<>();
-    	
-    	for (int i = 0; i < actionList.size(); i++) {
+        for (int i = 0; i < actionList.size(); i++) {
     		Action action = actionList.get(i);
     		ActorRef store = route(action.getKey());
     		
@@ -31,13 +30,12 @@ public class KVClient {
     		}
     		transactionMap.get(store).add(action);
     	}
-    	
     	// send the Actions to each KVStore ActorRef and request votes
     	for (ActorRef store : transactionMap.keySet()) {
     		Timeout timeout = new Timeout(Duration.create(1, "seconds"));
 
     		//begins transaction and immediately asks for votes
-            Future<Object> future = Patterns.ask(store, new KVStore.beginTransaction(transactionID, actionList), timeout);
+            Future<Object> future = Patterns.ask(store, new KVStore.beginTransaction(transactionID, transactionMap.get(store)), timeout);
             boolean vote = (Boolean) Await.result(future, timeout.duration());
             
             if (!vote) {
@@ -99,8 +97,7 @@ public class KVClient {
     }
 
     private ActorRef route(String key){
-        // need to figure out this routing function
-        int hash = Math.abs(key.hashCode());
-        return KVStores[0];
+        // route same table to the same store
+        return KVStores[(key.charAt(0) - 'A')%KVStores.length];
     }
 }

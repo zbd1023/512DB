@@ -126,9 +126,8 @@ public class KVStore extends AbstractActor{
             getSender().tell(sendList, getSelf());
     		return;
     	}
-
     	List<Action> actionList = transactionMap.get(transactionID);
-    	// execute each Action
+        // execute each Action
     	for (int i = 0; i < actionList.size(); i++) {
     		Action action = actionList.get(i);
 
