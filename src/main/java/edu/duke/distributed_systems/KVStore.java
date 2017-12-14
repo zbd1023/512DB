@@ -162,9 +162,6 @@ public class KVStore extends AbstractActor{
     		//INSERT STATEMENT
     		else if (action instanceof PutAction) {
     			PutAction putAction = (PutAction) action;
-                //if successful insert, send true, else send false
-//                getSender().tell(new InsertResult(true), getSelf());
-
                 sendList.add(handleInsertRes(action));
 
     		}
@@ -174,7 +171,6 @@ public class KVStore extends AbstractActor{
     		    sendList.add(res);
     		}
     	}
-    	System.out.println("sending after");
         getSender().tell(sendList, getSelf());
     	releaseLocks(actionList);
     	transactionMap.remove(transactionID);
@@ -188,7 +184,8 @@ public class KVStore extends AbstractActor{
 
     private ScanResult handleSelectRes(Action action) throws Result.MalformedKeyException {
         ScanAction scanAction = (ScanAction) action;
-
+        System.out.println("Scan!!!");
+        System.out.println(scanAction);
         String start = scanAction.getKey();
         String end = scanAction.getEndKey();
 

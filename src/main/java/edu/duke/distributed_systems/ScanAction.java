@@ -16,4 +16,9 @@ public class ScanAction extends Action {
 	public String getEndKey() {
 		return endKey;
 	}
+
+	@Override
+	public String toString() {
+		return "Scan Action{ start key: "+startKey+" end key: "+endKey+" }";
+	}
 }

@@ -18,6 +18,7 @@ public class ScanResult extends Result {
         this.init(key);
     }
     private void init(String key) throws MalformedKeyException {
+        System.out.println(key);
         String strs[] = key.split("/");
         if(strs.length != 3) {
             throw new MalformedKeyException("Key is not formatted correctly.");

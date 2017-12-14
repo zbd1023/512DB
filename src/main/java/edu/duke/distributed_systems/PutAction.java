@@ -16,4 +16,9 @@ public class PutAction extends Action {
 	public String getValue() {
 		return value;
 	}
+
+	@Override
+	public String toString() {
+		return "Put Action{ key: "+key+" value: "+value+" }";
+	}
 }
