@@ -39,7 +39,9 @@ public class SQLLayer {
     private Result processSelect(String SQL) throws Exception {
         TransactionGenerator TG = new TransactionGenerator(metadataStore);
         Transaction t =  TG.makeSelectTransaction(SQL);
-        return this.kvClient.processTransaction(t);
+        AggregateResults ag = (AggregateResults)this.kvClient.processTransaction(t);
+        ag.applyWhere(new SelectSqlParser(SQL).getWhere());
+        return ag;
     }
 
     private boolean processInsert(String SQL) throws Exception {

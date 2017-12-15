@@ -45,11 +45,43 @@ public class AggregateResults extends Result {
     public List<Map<String, String>> getResult() {
         if(resultList != null)
             return resultList;
-        System.out.println(aggregateResults);
         resultList = new ArrayList<>();
         for(String key : aggregateResults.keySet())
             resultList.add(aggregateResults.get(key));
 
         return resultList;
+    }
+
+    public void applyWhere(String where){
+        if(where.length() > 0){
+            String[] clauses = where.split("AND");
+            applyEqual(getConstraints(clauses));
+        }
+
+    }
+
+    private void applyEqual(HashMap<String, String> eqs){
+        ArrayList<String> keysToRemove = new ArrayList<>();
+        for(String key : aggregateResults.keySet()){
+            Map<String, String> res = aggregateResults.get(key);
+            for(String col : eqs.keySet()){
+                if(!eqs.get(col).equals(res.get(col))){
+                    keysToRemove.add(key);
+                    break;
+                }
+            }
+        }
+        keysToRemove.forEach(key -> aggregateResults.remove(key));
+    }
+
+    private HashMap<String, String> getConstraints(String[] eqs){
+        HashMap<String, String> res = new HashMap<>();
+        for(String s : eqs){
+            String[] clause = s.split("=");
+            String col = clause[0].trim();
+            String val = clause[1].trim();
+            res.put(col,val);
+        }
+        return res;
     }
 }

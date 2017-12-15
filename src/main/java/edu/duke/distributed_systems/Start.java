@@ -50,9 +50,14 @@ public class Start {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        try {
+            layer.processSQL("INSERT INTO Users (id, first, last, email) VALUES (asdfg, Jane, Dan, jdduke.edu)");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         try {
-            System.out.println(layer.processSQL("SELECT id, first, last, email FROM Users").getResult());
+            System.out.println(layer.processSQL("SELECT id, first, last, email FROM Users where first = Jane").getResult());
         } catch (Exception e) {
             e.printStackTrace();
         }
