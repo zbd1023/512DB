@@ -16,14 +16,6 @@ public class Start {
             for(int i =0; i < KVStores.length; i++){
                 KVStores[i] = system.actorOf(KVStore.props(), "KVStore" + i);
             }
-
-//            KVClient c = new KVClient(KVStores);
-//            MetadataStore metaStore = new MetadataStore();
-//            metaStore.setPrimaryKey("tb", "column1");
-//            SQLLayer sqlLayer = new SQLLayer(c,metaStore);
-//            sqlLayer.processSQL("INSERT INTO tb (column1, column2, column3) VALUES ( key1, value2, value3)");
-//            sqlLayer.processSQL("INSERT INTO tb (column1, column2, column3) VALUES ( key2, value4, value5)");
-//            System.out.println(sqlLayer.processSQL("SELECT column1, column2 FROM tb").getResult());
             testQuery(KVStores);
             System.out.println(">>> Press ENTER to exit <<<");
             System.in.read();
@@ -41,17 +33,17 @@ public class Start {
         dataStore.setPrimaryKey("Users", "id");
         SQLLayer layer = new SQLLayer(client, dataStore);
         try {
-            layer.processSQL("INSERT INTO Users (id, first, last, email) VALUES (asf, Wilson, Zhang, bzduke.edu)");
+            layer.processSQL("INSERT INTO Users (id, first, last, email) VALUES (bz43, Wilson, Zhang, edu)");
         } catch (Exception e) {
             e.printStackTrace();
         }
         try {
-            layer.processSQL("INSERT INTO Users (id, first, last, email) VALUES (asfg, Jane, Doe, jdduke.edu)");
+            layer.processSQL("INSERT INTO Users (id, first, last, email) VALUES (bz44, Jane, Doe, edu)");
         } catch (Exception e) {
             e.printStackTrace();
         }
         try {
-            layer.processSQL("INSERT INTO Users (id, first, last, email) VALUES (asdfg, Jane, Dan, jdduke.edu)");
+            layer.processSQL("INSERT INTO Users (id, first, last, email) VALUES (bz45, Jane, Dan, edu)");
         } catch (Exception e) {
             e.printStackTrace();
         }
